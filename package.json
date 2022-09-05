@@ -1,6 +1,6 @@
 {
   "name": "react-native-ble-manager-hooks",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "lint": "eslint --ext .tsx --ext .ts src/",
     "format": "prettier --check ./src",
     "start": "rm -rf dist/ && tsc -w --outDir dist/",
-    "prepare": "rm -rf dist && tsc"
+    "prepare": "rm -rf dist && tsc",
+    "versioning": "npx standard-version --release-as"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
@@ -29,6 +30,8 @@
     "react-native-ble-manager": "^8.0.0"
   },
   "devDependencies": {
+    "@types/react": "*",
+    "@types/react-native": "*",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "eslint": "^8.23.0",
@@ -38,15 +41,31 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "typescript": "^4.8.2",
-    "@types/react": "*",
-    "@types/react-native": "*",
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "typescript": "^4.8.2",
+    "commitizen": "^4.2.5",
+    "cz-conventional-changelog": "^3.3.0",
+    "standard-version": "^9.5.0",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:chongs02/react-native-ble-manager-hooks.git"
   },
   "keywords": [
     "react-native"
   ],
   "author": "chongs02 <chongs02@naver.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chongs02/react-native-ble-manager-hooks/issues"
+  },
+  "homepage": "https://github.com/chongs02/react-native-ble-manager-hooks#readme"
 }
