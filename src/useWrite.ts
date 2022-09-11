@@ -27,14 +27,26 @@ interface TUseWrite<T> {
   errorCondition?: (v: T) => boolean;
 }
 
+/**
+ *
+ * useWriteState
+ *
+ *
+ * @param props
+ * @returns
+ */
 export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
   const [loading, setLoading] = useSwitchState();
 
+  // flag to avoid multiple request one time (one request for one moment)
   const writeSuccessRef = useRef(true);
-  const writedParams = useRef<TWriteParams>();
+
+  // ref for ble manager listener
   const handlerUpdate = useRef<EmitterSubscription>();
 
+  // buffer to store result of ble command
   const responseBuffer = useRef<T>();
+  // buffer to store error result of ble command
   const commandErrorBuffer = useRef<T>();
 
   const onWriteCommand = async ({
@@ -52,17 +64,12 @@ export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
     responseBuffer.current = undefined;
     commandErrorBuffer.current = undefined;
 
-    writedParams.current = {
-      peripheralID,
-      serviceUUID,
-      characteristicUUID,
-      data,
-      maxByteSize,
-    };
-
     try {
+      // delay
       await sleep(delay ? delay : 100);
+
       writeSuccessRef.current = false;
+
       await BleManager.write(
         peripheralID,
         serviceUUID,
@@ -72,11 +79,11 @@ export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
       );
       writeSuccessRef.current = true;
 
+      //wait fot getting result or error result of ble command ( from device )
       while (!responseBuffer.current && !commandErrorBuffer.current) {
         await sleep(100);
       }
     } catch (e: any) {
-      setLoading(false);
       if (props?.onCatchError) {
         props.onCatchError(e);
       } else {
@@ -85,13 +92,12 @@ export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
         }
       }
     } finally {
+      setLoading(false);
       return [responseBuffer.current, commandErrorBuffer.current];
     }
   };
 
   const handleUpdateValueForCharacteristic = (response: T) => {
-    setLoading(false);
-
     if (props?.errorCondition) {
       const isError = props.errorCondition(response);
       if (isError) {
@@ -125,7 +131,6 @@ export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
 
   return {
     loading,
-    writedParams: writedParams.current,
     onWriteCommand,
   };
 };
