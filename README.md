@@ -24,3 +24,28 @@ RN 0.60+
 ```shell
 npm i --save react-native-ble-manager-hooks
 ```
+
+## Usage
+
+```shell
+
+const { loading, onWriteCommand } = useWrite()
+
+const getMacAddress = async () => {
+
+    const data = [\x00, \x00, \x00]
+
+    const [res, err] = onWriteCommand({
+        peripheralID:"XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+        serviceUUID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+        characteristicUUID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+        data
+    })
+
+    if(err) {
+        //error logic
+    }
+
+}
+
+```
