@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/chongs02/react-native-ble-manager-hooks/compare/v0.1.3...v0.1.4) (2022-09-11)
+
+
+### Docs
+
+* **example:** add example in readme ([0987ebd](https://github.com/chongs02/react-native-ble-manager-hooks/commit/0987ebdf4dbb9b408be5cf08d3a7318075c824e6))
+
 ### 0.1.3 (2022-09-11)
 
 
