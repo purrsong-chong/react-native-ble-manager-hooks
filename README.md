@@ -35,7 +35,7 @@ const getMacAddress = async () => {
 
     const data = [\x00, \x00, \x00]
 
-    const [res, err] = onWriteCommand({
+    const [res, err] = await onWriteCommand({
         peripheralID:"XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
         serviceUUID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
         characteristicUUID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
