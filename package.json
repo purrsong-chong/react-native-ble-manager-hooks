@@ -60,7 +60,10 @@
     "url": "git+git@github.com:chongs02/react-native-ble-manager-hooks.git"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "react-native-ble-manager",
+    "ble",
+    "블루투스"
   ],
   "author": "chongs02 <chongs02@naver.com>",
   "license": "MIT",
