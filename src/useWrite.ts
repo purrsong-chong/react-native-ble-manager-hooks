@@ -1,18 +1,9 @@
 import { useEffect, useState } from "react";
 import { BleCommandManager } from "./BleCommandManager";
-import {
-  THandleUpdateValueForCharacteristicValue,
-  TWriteCommand,
-} from "./types";
+import { TWriteCommand } from "./types";
 
 interface TUseWrite<T> {
   onCatchError?: (v: any) => any;
-  onCatchCommandError?: (
-    v: [
-      THandleUpdateValueForCharacteristicValue | undefined,
-      THandleUpdateValueForCharacteristicValue | undefined
-    ]
-  ) => any;
   successCondition?: (v: T) => boolean;
   errorCondition?: (v: T) => boolean;
   /** 연결 해제 시 호출될 콜백 함수 */
@@ -34,9 +25,6 @@ export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
     setLoading(true);
     try {
       const result = await bleManager.writeCommand(params);
-      if (props?.onCatchCommandError) {
-        props.onCatchCommandError(result);
-      }
       return result;
     } catch (e: any) {
       console.log("e", e);
