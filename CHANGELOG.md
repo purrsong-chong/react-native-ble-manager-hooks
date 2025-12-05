@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/chongs02/react-native-ble-manager-hooks/compare/v0.2.2...v0.2.3) (2025-12-05)
+
+
+### Others
+
+* remove package-lock.json file ([df7dcd2](https://github.com/chongs02/react-native-ble-manager-hooks/commit/df7dcd2057d2b51d787a1a2e82eab40b9284193e))
+
 ### [0.2.2](https://github.com/chongs02/react-native-ble-manager-hooks/compare/v0.2.1...v0.2.2) (2025-12-05)
 
 
