@@ -1,30 +1,22 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { BleCommandManager } from "./BleCommandManager";
 import {
-  EmitterSubscription,
-  NativeEventEmitter,
-  NativeModules,
-} from "react-native";
-import BleManager from "react-native-ble-manager";
-import { sleep } from "./utils/sleep";
-import { useSwitchState } from "./utils/useSwitchState";
-
-const BleManagerModule = NativeModules.BleManager;
-const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
-
-interface TWriteParams {
-  peripheralID: string;
-  serviceUUID: string;
-  characteristicUUID: string;
-  data: any;
-  maxByteSize?: number | undefined;
-  onCatchError?: (v: any) => any;
-  delay?: number;
-}
+  THandleUpdateValueForCharacteristicValue,
+  TWriteCommand,
+} from "./types";
 
 interface TUseWrite<T> {
   onCatchError?: (v: any) => any;
+  onCatchCommandError?: (
+    v: [
+      THandleUpdateValueForCharacteristicValue | undefined,
+      THandleUpdateValueForCharacteristicValue | undefined
+    ]
+  ) => any;
   successCondition?: (v: T) => boolean;
   errorCondition?: (v: T) => boolean;
+  /** 연결 해제 시 호출될 콜백 함수 */
+  onDisconnected?: () => void;
 }
 
 /**
@@ -36,96 +28,38 @@ interface TUseWrite<T> {
  * @returns
  */
 export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
-  const [loading, setLoading] = useSwitchState();
-
-  // flag to avoid multiple request one time (one request for one moment)
-  const writeSuccessRef = useRef(true);
-
-  // ref for ble manager listener
-  const handlerUpdate = useRef<EmitterSubscription>();
-
-  // buffer to store result of ble command
-  const responseBuffer = useRef<T>();
-  // buffer to store error result of ble command
-  const commandErrorBuffer = useRef<T>();
-
-  const onWriteCommand = async ({
-    peripheralID,
-    serviceUUID,
-    characteristicUUID,
-    data,
-    maxByteSize,
-    onCatchError,
-    delay,
-  }: TWriteParams): Promise<[T | undefined, T | undefined]> => {
+  const [loading, setLoading] = useState(false);
+  const bleManager = BleCommandManager.getInstance();
+  const onWriteCommand = async (params: TWriteCommand) => {
     setLoading(true);
-
-    //initializeBuffer
-    responseBuffer.current = undefined;
-    commandErrorBuffer.current = undefined;
-
     try {
-      // delay
-      await sleep(delay ? delay : 100);
-
-      writeSuccessRef.current = false;
-
-      await BleManager.write(
-        peripheralID,
-        serviceUUID,
-        characteristicUUID,
-        data,
-        maxByteSize
-      );
-      writeSuccessRef.current = true;
-
-      //wait fot getting result or error result of ble command ( from device )
-      while (!responseBuffer.current && !commandErrorBuffer.current) {
-        await sleep(100);
+      const result = await bleManager.writeCommand(params);
+      if (props?.onCatchCommandError) {
+        props.onCatchCommandError(result);
       }
+      return result;
     } catch (e: any) {
+      console.log("e", e);
       if (props?.onCatchError) {
         props.onCatchError(e);
       } else {
-        if (onCatchError) {
-          onCatchError(e);
-        }
+        console.log(
+          "e",
+          typeof e.message === "string" ? e.message : JSON.stringify(e)
+        );
       }
+      return [undefined, undefined];
     } finally {
       setLoading(false);
-      return [responseBuffer.current, commandErrorBuffer.current];
-    }
-  };
-
-  const handleUpdateValueForCharacteristic = (response: T) => {
-    if (props?.errorCondition) {
-      const isError = props.errorCondition(response);
-      if (isError) {
-        commandErrorBuffer.current = response;
-      }
-    }
-
-    if (props?.successCondition) {
-      const isSuccess = props.successCondition(response);
-      if (isSuccess) {
-        return (responseBuffer.current = response);
-      }
-      return (responseBuffer.current = undefined);
-    } else {
-      return (responseBuffer.current = response);
     }
   };
 
   useEffect(() => {
-    handlerUpdate.current = bleManagerEmitter.addListener(
-      "BleManagerDidUpdateValueForCharacteristic",
-      handleUpdateValueForCharacteristic
-    );
-
+    // 연결 해제 콜백 설정
+    bleManager.setDisconnectedCallback(props?.onDisconnected);
     return () => {
-      if (handlerUpdate.current) {
-        handlerUpdate.current.remove();
-      }
+      bleManager.setDisconnectedCallback(undefined);
+      bleManager.cleanup();
     };
   }, []);
 
