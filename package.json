@@ -59,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+git@github.com:chongs02/react-native-ble-manager-hooks.git"
+    "url": "git+git@github.com:purrsong-chong/react-native-ble-manager-hooks.git"
   },
   "keywords": [
     "react-native",
@@ -67,11 +67,11 @@
     "ble",
     "블루투스"
   ],
-  "author": "chongs02 <chongs02@naver.com>",
+  "author": "Eunchong Shin <chongs02@naver.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chongs02/react-native-ble-manager-hooks/issues"
+    "url": "https://github.com/purrsong-chong/react-native-ble-manager-hooks/issues"
   },
-  "homepage": "https://github.com/chongs02/react-native-ble-manager-hooks#readme",
+  "homepage": "https://github.com/purrsong-chong/react-native-ble-manager-hooks#readme",
   "packageManager": "yarn@1.22.22"
 }
