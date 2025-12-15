@@ -101,8 +101,6 @@ export const useBleScan = (options?: TUseBleScanOptions) => {
   const stopScan = useCallback(async () => {
     try {
       await BleManager.stopScan();
-      setIsScanning(false);
-      options?.onScanStopped?.();
     } catch (err) {
       console.error("Failed to stop scan:", err);
       setError(err);
