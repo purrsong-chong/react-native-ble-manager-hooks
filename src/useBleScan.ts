@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import BleManager, { ScanOptions } from "react-native-ble-manager";
-import { TPeripheralInfo } from "./types";
+import BleManager, { Peripheral, ScanOptions } from "react-native-ble-manager";
 
 interface TUseBleScanOptions {
   /** Array of service UUIDs to scan for (optional) */
@@ -10,7 +9,7 @@ interface TUseBleScanOptions {
   /** Whether to allow duplicate peripherals (default: true) */
   allowDuplicates?: boolean;
   /** Callback function called when a peripheral is found */
-  onPeripheralFound?: (peripheral: TPeripheralInfo) => void;
+  onPeripheralFound?: (peripheral: Peripheral) => void;
   /** Callback function called when scan starts */
   onScanStarted?: () => void;
   /** Callback function called when scan stops */
@@ -24,7 +23,7 @@ interface TUseBleScanOptions {
  */
 export const useBleScan = (options?: TUseBleScanOptions) => {
   const [isScanning, setIsScanning] = useState(false);
-  const [peripherals, setPeripherals] = useState<Map<string, TPeripheralInfo>>(
+  const [peripherals, setPeripherals] = useState<Map<string, Peripheral>>(
     new Map()
   );
   const [error, setError] = useState<any>(null);
@@ -33,7 +32,7 @@ export const useBleScan = (options?: TUseBleScanOptions) => {
 
   // Add/update peripheral
   const addPeripheral = useCallback(
-    (peripheral: TPeripheralInfo) => {
+    (peripheral: Peripheral) => {
       setPeripherals((prev) => {
         const newMap = new Map(prev);
         newMap.set(peripheral.id, peripheral);
@@ -61,7 +60,7 @@ export const useBleScan = (options?: TUseBleScanOptions) => {
       // Setup peripheral discovery listener
       discoverListenerRef.current = BleManager.onDiscoverPeripheral(
         (peripheral: any) => {
-          const peripheralInfo: TPeripheralInfo = {
+          const peripheralInfo: Peripheral = {
             id: peripheral.id,
             name: peripheral.name,
             rssi: peripheral.rssi,
