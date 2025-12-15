@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/purrsong-chong/react-native-ble-manager-hooks/compare/v0.2.3...v0.3.0) (2025-12-15)
+
+
+### Features
+
+* add useBleManagerInit hook for managing BLE manager initialization state ([3ebd1f7](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/3ebd1f768f5485924b86e9cab21e21ee0454a412))
+* add useBlePeripheral hook for managing BLE peripheral connections and notifications ([843cef3](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/843cef3954e6d01f14e321c3712889ef7152cdab))
+* add useBluetoothState hook for managing Bluetooth service state ([61426da](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/61426da3d126812cbfc560564b0ae536e1a66bd5))
+* define PeripheralConnectionState type and update comments in useWrite for clarity ([72aa5a6](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/72aa5a6d295a1654473ded8309e8a83e08eb246b))
+* export additional hooks and types for Bluetooth and BLE management ([f894dec](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/f894dec8e44e1c569a853ed9d5a39da58afdce47))
+* implement useBleScan hook for managing BLE peripheral scanning ([175922c](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/175922c8ae86149a0665eaa871c337ccdc0f019a))
+
+
+### Others
+
+* update packageManager field in package.json to remove SHA512 hash ([78dd63f](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/78dd63f508416fc933f9d4784ced0b65a0fd5a1f))
+* update repository URL and author information in package.json ([8ff0924](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/8ff09241605ddc3a506ad09f5c3e5e1fe19db43f))
+
+
+### Code Refactoring
+
+* update comments in BleCommandManager.ts to English for clarity and consistency ([b89f13a](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/b89f13a6b48c9bf38db6687dc505abea3c96ca48))
+* update useBleScan hook to use Peripheral type for better type safety ([86c54d2](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/86c54d2d3cb0e9b23191b1b64a5efbd67935537e))
+
 ### [0.2.3](https://github.com/chongs02/react-native-ble-manager-hooks/compare/v0.2.2...v0.2.3) (2025-12-05)
 
 
