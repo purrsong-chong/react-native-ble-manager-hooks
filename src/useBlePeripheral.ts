@@ -53,8 +53,6 @@ export const useBlePeripheral = (
     try {
       setConnectionState("connecting");
       await BleManager.connect(peripheralId);
-      setError(null);
-      options?.onConnected?.();
     } catch (err) {
       console.error("Connection failed:", err);
       setError(err);
@@ -70,7 +68,6 @@ export const useBlePeripheral = (
     try {
       setConnectionState("disconnecting");
       await BleManager.disconnect(peripheralId);
-      setError(null); // Clear error on successful disconnect
     } catch (err) {
       console.error("Disconnection failed:", err);
       setError(err);
@@ -173,6 +170,7 @@ export const useBlePeripheral = (
       (event: any) => {
         if (event.id === peripheralId || event.peripheral === peripheralId) {
           setConnectionState("disconnected");
+          setError(null); // Clear error on successful disconnect
           options?.onDisconnected?.();
         }
       }
