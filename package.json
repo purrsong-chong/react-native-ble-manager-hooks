@@ -64,8 +64,18 @@
   "keywords": [
     "react-native",
     "react-native-ble-manager",
-    "ble",
-    "블루투스"
+    "react-native-ble-manager-hooks",
+    "react-native-ble-manager-hooks-example",
+    "react-native-ble-manager integration",
+    "react-native-ble-manager interface",
+    "react-native-ble-manager types",
+    "react-native-ble-manager hooks",
+    "react-native-ble-manager hooks example",
+    "react-native-ble-manager hooks integration",
+    "react-native-ble-manager hooks interface",
+    "react-native-ble-manager hooks types",
+    "react-native-ble-manager hooks example",
+    "react-native-ble-manager hooks integration"
   ],
   "author": "Eunchong Shin <chongs02@naver.com>",
   "license": "MIT",
