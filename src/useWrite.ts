@@ -6,17 +6,15 @@ interface TUseWrite<T> {
   onCatchError?: (v: any) => any;
   successCondition?: (v: T) => boolean;
   errorCondition?: (v: T) => boolean;
-  /** 연결 해제 시 호출될 콜백 함수 */
+  /** Callback function called when disconnected */
   onDisconnected?: () => void;
 }
 
 /**
+ * Hook for writing BLE commands with queue management
  *
- * useWriteState
- *
- *
- * @param props
- * @returns
+ * @param props - Hook options
+ * @returns Loading state and write command function
  */
 export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
   const [loading, setLoading] = useState(false);
@@ -43,7 +41,7 @@ export const useWrite = <T extends unknown>(props?: TUseWrite<T>) => {
   };
 
   useEffect(() => {
-    // 연결 해제 콜백 설정
+    // Setup disconnected callback
     bleManager.setDisconnectedCallback(props?.onDisconnected);
     return () => {
       bleManager.setDisconnectedCallback(undefined);

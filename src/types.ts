@@ -4,9 +4,6 @@ export type TServiceInfo = {
   txCharacteristicUUID: string;
   rxCharacteristicUUID: string;
 };
-/**
- * BLE 통신 관리를 위한 타입 정의
- */
 export interface THandleUpdateValueForCharacteristicValue {
   value: number[];
   peripheral: string;
@@ -19,3 +16,12 @@ export interface TWriteCommand {
   serviceData: TServiceInfo;
   maxByteSize?: number;
 }
+
+/**
+ * BLE Peripheral connection state
+ */
+export type PeripheralConnectionState =
+  | "disconnected"
+  | "connecting"
+  | "connected"
+  | "disconnecting";

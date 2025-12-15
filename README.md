@@ -14,6 +14,8 @@ A React Native library providing custom hooks for [react-native-ble-manager](htt
 - 🎯 **Response Matching**: Automatic command-response matching with duplicate filtering
 - ⚡ **TypeScript Support**: Full type definitions for better developer experience
 - 🔗 **Disconnection Detection**: Built-in BLE disconnection event handling
+- 📡 **BLE State Management**: Hooks for Bluetooth state, scanning, and peripheral management
+- 🎣 **React Hooks**: Custom hooks for common BLE operations
 
 ## Prerequisites
 
@@ -35,6 +37,16 @@ yarn add react-native-ble-manager-hooks
 Make sure you have installed and linked `react-native-ble-manager` in your project.
 
 ## Usage
+
+### Hooks Overview
+
+This library provides the following hooks:
+
+- `useBluetoothState()` - Returns the current Bluetooth service state
+- `useBleManagerInit()` - Manages BleManager initialization state
+- `useBlePeripheral()` - Manages a specific BLE peripheral (device)
+- `useBleScan()` - Manages the scanning process for peripherals
+- `useWrite()` - Writes BLE commands with queue management
 
 ### Basic Example
 
@@ -127,6 +139,156 @@ const MyComponent = () => {
 };
 ```
 
+### Bluetooth State Management
+
+```typescript
+import { useBluetoothState } from "react-native-ble-manager-hooks";
+import { BleState } from "react-native-ble-manager";
+
+const MyComponent = () => {
+  const bluetoothState = useBluetoothState();
+
+  return (
+    <View>
+      <Text>
+        Bluetooth State: {bluetoothState === BleState.On ? "On" : "Off"}
+      </Text>
+    </View>
+  );
+};
+```
+
+### BleManager Initialization
+
+```typescript
+import { useBleManagerInit } from "react-native-ble-manager-hooks";
+import BleManager from "react-native-ble-manager";
+
+const MyComponent = () => {
+  const { isInitialized, isInitializing, initError, initialize } =
+    useBleManagerInit({
+      autoInit: true, // Automatically initialize on mount
+      initOptions: { showAlert: false },
+    });
+
+  useEffect(() => {
+    if (isInitialized) {
+      // BleManager is ready, you can now use other hooks
+      console.log("BleManager initialized");
+    }
+  }, [isInitialized]);
+
+  // Or manually initialize
+  const handleInit = async () => {
+    await initialize();
+  };
+
+  return (
+    <View>
+      {isInitializing && <Text>Initializing...</Text>}
+      {initError && <Text>Error: {initError.message}</Text>}
+      {!isInitialized && <Button title="Initialize" onPress={handleInit} />}
+    </View>
+  );
+};
+```
+
+### Peripheral Scanning
+
+```typescript
+import { useBleScan } from "react-native-ble-manager-hooks";
+
+const ScanComponent = () => {
+  const {
+    isScanning,
+    peripherals,
+    error,
+    startScan,
+    stopScan,
+    clearPeripherals,
+  } = useBleScan({
+    serviceUUIDs: ["XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"], // Optional
+    scanTimeLimit: 10000, // 10 seconds
+    allowDuplicates: false,
+    onPeripheralFound: (peripheral) => {
+      console.log("Found peripheral:", peripheral.name);
+    },
+    onScanStarted: () => {
+      console.log("Scan started");
+    },
+    onScanStopped: () => {
+      console.log("Scan stopped");
+    },
+  });
+
+  return (
+    <View>
+      <Button
+        title={isScanning ? "Stop Scan" : "Start Scan"}
+        onPress={isScanning ? stopScan : startScan}
+      />
+      {peripherals.map((peripheral) => (
+        <Text key={peripheral.id}>
+          {peripheral.name || "Unknown"} - {peripheral.id}
+        </Text>
+      ))}
+    </View>
+  );
+};
+```
+
+### Peripheral Management
+
+```typescript
+import { useBlePeripheral } from "react-native-ble-manager-hooks";
+
+const PeripheralComponent = () => {
+  const peripheralId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
+  const {
+    connectionState,
+    isConnected,
+    isConnecting,
+    error,
+    connect,
+    disconnect,
+    retrieveServices,
+    startNotification,
+    stopNotification,
+  } = useBlePeripheral(peripheralId, {
+    onConnected: () => {
+      console.log("Connected!");
+    },
+    onDisconnected: () => {
+      console.log("Disconnected!");
+    },
+    onConnectionFailed: (error) => {
+      console.error("Connection failed:", error);
+    },
+  });
+
+  const handleConnect = async () => {
+    await connect();
+    const services = await retrieveServices();
+    if (services) {
+      // Start notification for a characteristic
+      await startNotification("SERVICE-UUID", "CHARACTERISTIC-UUID");
+    }
+  };
+
+  return (
+    <View>
+      <Text>State: {connectionState}</Text>
+      {error && <Text>Error: {error.message}</Text>}
+      <Button
+        title={isConnected ? "Disconnect" : "Connect"}
+        onPress={isConnected ? disconnect : handleConnect}
+        disabled={isConnecting}
+      />
+    </View>
+  );
+};
+```
+
 ### Multiple Sequential Commands
 
 The library automatically handles sequential command execution through the command queue. Commands are processed one at a time to prevent conflicts.
@@ -158,6 +320,97 @@ const sendMultipleCommands = async () => {
 ```
 
 ## API Reference
+
+### `useBluetoothState()`
+
+Returns the current Bluetooth service state.
+
+#### Returns
+
+- `BleState` - Current Bluetooth state (`Unknown`, `Resetting`, `Unsupported`, `Unauthorized`, `On`, `Off`, `TurningOn`, `TurningOff`)
+
+#### Example
+
+```typescript
+const state = useBluetoothState();
+// state will be one of: BleState.Unknown, BleState.On, BleState.Off, etc.
+```
+
+---
+
+### `useBleManagerInit(options?)`
+
+Manages BleManager initialization state.
+
+#### Parameters
+
+- `options?` (optional): Configuration object
+  - `autoInit?: boolean` - Whether to auto-initialize on mount (default: false)
+  - `initOptions?: StartOptions` - Initialization options (see [react-native-ble-manager docs](https://innoveit.github.io/react-native-ble-manager/methods/#start))
+
+#### Returns
+
+- `isInitialized: boolean` - Whether BleManager is initialized
+- `isInitializing: boolean` - Whether initialization is in progress
+- `initError: any` - Initialization error if any
+- `initialize: () => Promise<void>` - Function to manually initialize
+
+---
+
+### `useBleScan(options?)`
+
+Manages BLE peripheral scanning process.
+
+#### Parameters
+
+- `options?` (optional): Configuration object
+  - `serviceUUIDs?: string[]` - Array of service UUIDs to scan for
+  - `scanTimeLimit?: number` - Scan time limit in milliseconds
+  - `allowDuplicates?: boolean` - Whether to allow duplicate peripherals (default: true)
+  - `onPeripheralFound?: (peripheral: Peripheral) => void` - Callback when peripheral is found
+  - `onScanStarted?: () => void` - Callback when scan starts
+  - `onScanStopped?: () => void` - Callback when scan stops
+
+#### Returns
+
+- `isScanning: boolean` - Whether scanning is in progress
+- `peripherals: Peripheral[]` - Array of discovered peripherals
+- `peripheralsMap: Map<string, Peripheral>` - Map of discovered peripherals by ID
+- `error: any` - Scan error if any
+- `startScan: () => Promise<void>` - Function to start scanning
+- `stopScan: () => Promise<void>` - Function to stop scanning
+- `clearPeripherals: () => void` - Function to clear discovered peripherals list
+
+---
+
+### `useBlePeripheral(peripheralId?, options?)`
+
+Manages a specific BLE peripheral (device).
+
+#### Parameters
+
+- `peripheralId?: string` - ID of the peripheral to manage
+- `options?` (optional): Configuration object
+  - `onDisconnected?: () => void` - Callback when disconnected
+  - `onConnected?: () => void` - Callback when connection succeeds
+  - `onConnectionFailed?: (error: any) => void` - Callback when connection fails
+
+#### Returns
+
+- `peripheralId: string | undefined` - The peripheral ID
+- `connectionState: PeripheralConnectionState` - Connection state (`disconnected`, `connecting`, `connected`, `disconnecting`)
+- `isConnected: boolean` - Whether peripheral is connected
+- `isConnecting: boolean` - Whether connection is in progress
+- `isDisconnecting: boolean` - Whether disconnection is in progress
+- `error: any` - Error if any
+- `connect: () => Promise<void>` - Function to connect to peripheral
+- `disconnect: () => Promise<void>` - Function to disconnect from peripheral
+- `checkConnection: () => Promise<boolean>` - Function to check connection status
+- `retrieveServices: () => Promise<any>` - Function to retrieve services
+- `startNotification: (serviceUUID: string, characteristicUUID: string) => Promise<boolean>` - Function to start notification
+- `stopNotification: (serviceUUID: string, characteristicUUID: string) => Promise<boolean>` - Function to stop notification
+
+---
 
 ### `useWrite<T>(options?)`
 
