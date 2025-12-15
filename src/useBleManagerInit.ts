@@ -72,6 +72,8 @@ export const useBleManagerInit = (options?: TUseBleManagerOptions) => {
       console.error("Failed to initialize BleManager:", error);
       setInitError(error);
       setIsInitialized(false);
+    } finally {
+      setIsInitializing(false);
     }
   }, [isInitialized, isInitializing, options?.initOptions]);
 
