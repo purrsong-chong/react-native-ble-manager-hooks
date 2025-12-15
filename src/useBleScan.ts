@@ -127,7 +127,7 @@ export const useBleScan = (options?: TUseBleScanOptions) => {
         stopScanListenerRef.current = null;
       }
     };
-  }, [isScanning, stopScan]);
+  }, []);
 
   return {
     isScanning,
