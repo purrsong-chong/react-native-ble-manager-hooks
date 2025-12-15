@@ -5,13 +5,13 @@ import {
   TWriteCommand,
 } from "./types";
 /**
- * BLE 명령어 관리자 클래스
- * 싱글톤 패턴을 사용하여 BLE 통신을 중앙 집중화하고 명령어 실행을 순차적으로 관리합니다.
+ * BLE command manager class
+ * Uses singleton pattern to centralize BLE communication and manage command execution sequentially.
  */
 export class BleCommandManager {
   private static instance: BleCommandManager;
   private onDisconnectedCallback?: () => void;
-  /** 실행 대기 중인 명령어 큐 */
+  /** Command queue waiting to be executed */
   private commandQueue: Array<{
     command: number;
     packet: number[];
@@ -31,12 +31,12 @@ export class BleCommandManager {
     this.setupDisconnectListener();
   }
 
-  // 연결 해제 콜백 설정 메서드 추가
+  // Method to set disconnected callback
   public setDisconnectedCallback(callback?: () => void) {
     this.onDisconnectedCallback = callback;
   }
   /**
-   * BleCommandManager의 싱글톤 인스턴스를 반환합니다.
+   * Returns the singleton instance of BleCommandManager.
    */
   public static getInstance(): BleCommandManager {
     if (!BleCommandManager.instance) {
@@ -45,7 +45,7 @@ export class BleCommandManager {
     return BleCommandManager.instance;
   }
 
-  // 연결 해제 리스너 설정
+  // Setup disconnect listener
   private setupDisconnectListener() {
     BleManager.onDisconnectPeripheral((event: any) => {
       console.log("Disconnected from device:", event);
@@ -55,8 +55,8 @@ export class BleCommandManager {
     });
   }
   /**
-   * BLE 특성값 업데이트 리스너를 설정합니다.
-   * 중복 응답을 필터링하고 명령어에 대한 응답을 매칭합니다.
+   * Sets up BLE characteristic value update listener.
+   * Filters duplicate responses and matches responses to commands.
    */
   private setupBleListener() {
     BleManager.onDidUpdateValueForCharacteristic((data: any) => {
@@ -73,9 +73,9 @@ export class BleCommandManager {
   }
 
   /**
-   * BLE 연결 상태를 확인하고 필요한 경우 재연결을 시도합니다.
-   * @param serviceData - BLE 서비스 정보
-   * @returns 연결 성공 여부
+   * Checks BLE connection status and attempts to reconnect if necessary.
+   * @param serviceData - BLE service information
+   * @returns Connection success status
    */
   private async ensureConnection(serviceData: TServiceInfo): Promise<boolean> {
     try {
@@ -107,8 +107,8 @@ export class BleCommandManager {
   }
 
   /**
-   * 명령어 큐를 처리합니다.
-   * 큐에 있는 명령어를 순차적으로 실행하고 결과를 처리합니다.
+   * Processes the command queue.
+   * Executes commands in the queue sequentially and handles results.
    */
   private async processQueue() {
     if (this.isProcessing || this.commandQueue.length === 0) return;
@@ -129,9 +129,9 @@ export class BleCommandManager {
   }
 
   /**
-   * 단일 BLE 명령어를 실행합니다.
-   * @param command - 실행할 명령어 정보
-   * @returns 명령어 실행 결과
+   * Executes a single BLE command.
+   * @param command - Command information to execute
+   * @returns Command execution result
    */
   private async executeCommand({
     command,
@@ -243,9 +243,9 @@ export class BleCommandManager {
   }
 
   /**
-   * BLE 명령어를 큐에 추가하고 실행을 요청합니다.
-   * @param params - 실행할 명령어 파라미터
-   * @returns Promise<[성공 응답, 에러 응답]>
+   * Adds a BLE command to the queue and requests execution.
+   * @param params - Command parameters to execute
+   * @returns Promise<[success response, error response]>
    */
   public async writeCommand(
     params: TWriteCommand
@@ -266,7 +266,7 @@ export class BleCommandManager {
   }
 
   /**
-   * 리소스를 정리하고 진행 중인 작업을 중단합니다.
+   * Cleans up resources and cancels ongoing operations.
    */
   public cleanup() {
     if (this.abortController) {
