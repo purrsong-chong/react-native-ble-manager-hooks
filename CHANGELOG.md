@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/purrsong-chong/react-native-ble-manager-hooks/compare/v0.3.0...v0.3.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* ensure proper state management in useBleManagerInit and useBleScan hooks ([ab72572](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/ab725727ef2523fc54415aa70f09312f2c588924))
+* remove redundant onConnected callback invocation in useBlePeripheral hook ([096d8cf](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/096d8cf20f7b2ee1b1472ee52386170b38882ccf))
+
+
+### Docs
+
+* enhance README with new hooks for Bluetooth state management, scanning, and peripheral management ([02e1d43](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/02e1d43aa77c6d2d6e75032183cde896a6c33c73))
+
+
+### Others
+
+* update package.json keywords to include new hooks and integrations for react-native-ble-manager ([15f2a74](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/15f2a74ab2810c3e4c986ab5e276546e01653de9))
+
+
+### Code Refactoring
+
+* remove unnecessary state updates in useBleManagerInit and useBleScan hooks ([e2c84fe](https://github.com/purrsong-chong/react-native-ble-manager-hooks/commit/e2c84fe3d539659d4b52e0101ffe0d3fba24caef))
+
 ## [0.3.0](https://github.com/purrsong-chong/react-native-ble-manager-hooks/compare/v0.2.3...v0.3.0) (2025-12-15)
 
 
